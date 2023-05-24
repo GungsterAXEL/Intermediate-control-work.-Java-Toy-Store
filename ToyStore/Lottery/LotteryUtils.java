@@ -11,6 +11,29 @@ import java.util.Date;
 import java.util.Random;
 
 public class LotteryUtils {
+    private static void mkDir(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
+
+    private static void mkFile(String filePath, String logLine) {
+        try {
+            File logFile = new File(filePath);
+            FileWriter writer = new FileWriter(logFile, true);
+
+            if (logFile.length() == 0) {
+                writer.write("Выигрыши:\n");
+            }
+
+            writer.write(logLine + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Toy getPrize(Store<Toy> toyStore) {
         int indexRange = toyStore.size();
 
@@ -23,9 +46,18 @@ public class LotteryUtils {
         Toy prize = toyStore.get(random.nextInt(indexRange));
         while (prize.getPrice() > winValue) {
             prize = toyStore.get(random.nextInt(indexRange));
-            System.out.println(prize.getPrice() + " " + winValue);
         }
         return prize;
+    }
+
+    static void decreaseAmount(Store<Toy> toyStore, Toy toy) {
+        int amount = toy.getAmount();
+        if (amount > 0) toy.setAmount(amount - 1);
+        if (amount - 1 == 0) {
+            for (int i = 0; i < toyStore.size(); i++) {
+                if (toy.getId() == toyStore.get(i).getId()) toyStore.remove(i);
+            }
+        }
     }
 
     public static void prizeLog(Toy prize) {
@@ -36,23 +68,7 @@ public class LotteryUtils {
         String logLine = formattedDate + " " + prize.getName();
 
         String directoryPath = "ToyStore" + File.separator + "Lottery" + File.separator;
-        File directory = new File(directoryPath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        try {
-            File logFile = new File(directoryPath + filename);
-            FileWriter writer = new FileWriter(logFile, true);
-
-            if (logFile.length() == 0) {
-                writer.write("Выигрыши:\n");
-            }
-
-            writer.write(logLine + "\n");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mkDir(directoryPath);
+        mkFile(directoryPath + filename, logLine);
     }
 }
