@@ -217,7 +217,7 @@ csx/
 ecf/
 rcf/
 
-# Windows Store app package directories and files
+# Windows ToyStore.Store app package directories and files
 AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml
