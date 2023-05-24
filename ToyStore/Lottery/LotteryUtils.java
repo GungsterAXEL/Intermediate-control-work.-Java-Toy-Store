@@ -11,30 +11,19 @@ import java.util.Date;
 import java.util.Random;
 
 public class LotteryUtils {
-    private static int getTotalPrice(Store<Toy> toyStore) {
-        int totalPrice = 0;
-        for (Toy toy : toyStore) totalPrice += toy.getPrice();
-        return totalPrice;
-    }
-
-    private static int winValue(int totalPrice) {
-        Random random = new Random();
-        int winValue = random.nextInt(totalPrice);
-        return winValue;
-    }
-
     public static Toy getPrize(Store<Toy> toyStore) {
-        int matching = 0;
-        Toy prize = null;
-        int winValue = winValue(getTotalPrice(toyStore));
-        for (int i = 0; i < toyStore.size(); i++) {
-            matching += toyStore.get(i).getPrice();
-            if (matching >= winValue) {
-                prize = toyStore.get(i);
-                int curentAmount = prize.getAmount();
-                if (curentAmount > 0) prize.setAmount(curentAmount - 1);
-                if (prize.getAmount() == 0) toyStore.remove(i);
-            }
+        int indexRange = toyStore.size();
+
+        int minPrice = toyStore.get(0).getPrice();
+        int maxPrice = toyStore.get(indexRange - 1).getPrice();
+
+        Random random = new Random();
+        int winValue = random.nextInt(minPrice, maxPrice);
+
+        Toy prize = toyStore.get(random.nextInt(indexRange));
+        while (prize.getPrice() > winValue) {
+            prize = toyStore.get(random.nextInt(indexRange));
+            System.out.println(prize.getPrice() + " " + winValue);
         }
         return prize;
     }
@@ -46,11 +35,19 @@ public class LotteryUtils {
         String filename = "LotteryLog.txt";
         String logLine = formattedDate + " " + prize.getName();
 
+        String directoryPath = "ToyStore" + File.separator + "Lottery" + File.separator;
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         try {
-            File logFile = new File(filename);
+            File logFile = new File(directoryPath + filename);
             FileWriter writer = new FileWriter(logFile, true);
 
-            if (logFile.length() == 0) { writer.write("Выигрыши:\n"); }
+            if (logFile.length() == 0) {
+                writer.write("Выигрыши:\n");
+            }
 
             writer.write(logLine + "\n");
             writer.close();

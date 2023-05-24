@@ -20,6 +20,7 @@ public class DelExecutable<S extends Store> implements CommandExecutable {
             Random random = new Random();
             int index = random.nextInt(this.toyStore.size());
             this.toyStore.remove(index);
+            System.out.println("Случайная игрушка удалена.");
         }
     }
 }

@@ -32,7 +32,7 @@ public class TitleList {
             "Игровая кухня",
             "Игрушечный телефон",
             "Плюшевый медведь",
-            "Радиоуправляемый вертолет"};
+            "Радиоуправляемый вертолёт"};
 
     public static String[] getTitleList() {
         return titleList;
